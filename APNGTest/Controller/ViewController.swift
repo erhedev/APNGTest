@@ -11,8 +11,12 @@ import APNGKit
 
 class ViewController: UIViewController {
     
-    var systemInfo = SystemUsageInfo()
+    var timer: Timer?
     
+    var monitoring = Monitoring()
+    
+    var monitoringViewModel: MonitoringViewModel!
+
     var pickedImage: APNGImage?
     
     var urlString: String?
@@ -23,7 +27,9 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       
+        
+        monitoringViewModel = MonitoringViewModel(monitoring: monitoring)
+        
         let apngImage: APNGImage?
         
         apngImage = APNGImage(named: "coin-animation")
@@ -32,8 +38,8 @@ class ViewController: UIViewController {
         
         apngAnimationView.startAnimating()
         
-        updateMemoryUsage()
-        updateCPULoad()
+        startTimer()
+        
     
     }
 
@@ -72,20 +78,16 @@ class ViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
-
-    func updateMemoryUsage() {
-
-        if let memory = systemInfo.report_memory() {
-            memoryUsageLabel.text = String(memory)
+    func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+            print("Timer fired!")
+            self.monitoring.updateCpuUsage()
+            self.monitoring.updateMemoryUsage()
         }
-        
     }
     
-    func updateCPULoad() {
-        if let load = systemInfo.hostCPULoadInfo() {
-            cpuUsageLabel.text = String(load)
-        }
-    }
+
+
     
 }
 
