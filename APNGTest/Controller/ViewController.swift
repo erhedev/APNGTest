@@ -55,6 +55,12 @@ class ViewController: UIViewController {
             if let text = alert.textFields?.first?.text {
                 print(text)
                 self.urlString = text
+
+                if text.isValidURL {
+                    if let url = URL(string: text) {
+                        self.apngAnimationView.load(url: url)
+                    }
+                }
             }
             print("Done")
         }
@@ -66,6 +72,7 @@ class ViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
+
     func updateMemoryUsage() {
 
         if let memory = systemInfo.report_memory() {
@@ -88,20 +95,6 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
         self.pickedImage = image
         
         picker.dismiss(animated: true, completion: nil)
-    }
-}
-
-extension APNGImageView {
-    func load(url: URL) {
-        DispatchQueue.global().async { [weak self] in
-            if let data = try? Data(contentsOf: url) {
-                if let image = APNGImage(data: data) {
-                    DispatchQueue.main.async {
-                        self?.image = image
-                    }
-                }
-            }
-        }
     }
 }
 

@@ -44,7 +44,6 @@ struct SystemUsageInfo {
         if kerr == KERN_SUCCESS {
             print("Memory used in bytes: \(taskInfo.resident_size)")
             return Int(taskInfo.resident_size)
-
         }
         else {
             print("Error with task_info(): " +
